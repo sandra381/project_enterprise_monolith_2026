@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="PetClinic PMD Rules"
-         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="
-           http://pmd.sourceforge.net/ruleset/2.0.0
-           https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
 
   <description>
-    Governance rule: Cyclomatic Complexity threshold.
+    Governance rule: Cyclomatic Complexity monitoring.
   </description>
 
-  <rule ref="category/java/design.xml/CyclomaticComplexity">
-    <properties>
-      <property name="reportLevel" value="15"/>
-    </properties>
-  </rule>
+  <rule ref="category/java/design.xml/CyclomaticComplexity"/>
 
 </ruleset>
-
