@@ -7,5 +7,9 @@
   </description>
 
   <rule ref="category/java/design.xml/CyclomaticComplexity"/>
+	<properties>
+      <property name="reportLevel" value="15"/>
+    </properties>
+  </rule>
 
 </ruleset>
