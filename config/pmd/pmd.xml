@@ -6,9 +6,10 @@
     Governance rule: Cyclomatic Complexity monitoring.
   </description>
 
-  <rule ref="category/java/design.xml/CyclomaticComplexity"/>
-	<properties>
+  <rule ref="category/java/design.xml/CyclomaticComplexity">
+    <properties>
       <property name="reportLevel" value="15"/>
     </properties>
   </rule>
+
 </ruleset>
