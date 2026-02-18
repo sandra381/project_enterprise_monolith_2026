@@ -14,14 +14,44 @@
 </head>
 <body>
   <h1>DORA Metrics Dashboard</h1>
-  <div class="muted" id="meta">Dashboard listo. Falta conectar métricas.</div>
+  <div class="muted" id="meta">Cargando métricas...</div>
 
   <div class="grid">
-    <div class="card"><div class="muted">Deployment Frequency</div><div class="kpi">-</div></div>
-    <div class="card"><div class="muted">Lead Time</div><div class="kpi">-</div></div>
-    <div class="card"><div class="muted">Change Failure Rate</div><div class="kpi">-</div></div>
-    <div class="card"><div class="muted">MTTR</div><div class="kpi">-</div></div>
+    <div class="card">
+      <div class="muted">Deployments / week</div>
+      <div class="kpi" id="df">-</div>
+    </div>
+    <div class="card">
+      <div class="muted">Lead Time (avg hours)</div>
+      <div class="kpi" id="lt">-</div>
+    </div>
+    <div class="card">
+      <div class="muted">Change Failure Rate</div>
+      <div class="kpi" id="cfr">-</div>
+    </div>
+    <div class="card">
+      <div class="muted">MTTR (avg hours)</div>
+      <div class="kpi" id="mttr">-</div>
+    </div>
   </div>
 
+<script>
+fetch('./metrics.json', { cache: "no-store" })
+  .then(r => r.json())
+  .then(m => {
+    document.getElementById("meta").textContent =
+      Generated: ${m.generated_at} | Window: last ${m.window_days} days;
+
+    const k = m.kpis || {};
+    document.getElementById("df").textContent = (k.deployment_frequency_per_week ?? 0).toFixed(2);
+    document.getElementById("lt").textContent = (k.lead_time_avg_hours == null) ? "N/A" : k.lead_time_avg_hours.toFixed(1);
+    document.getElementById("cfr").textContent = (k.change_failure_rate == null) ? "N/A" : (k.change_failure_rate * 100).toFixed(1) + "%";
+    document.getElementById("mttr").textContent = (k.mttr_avg_hours == null) ? "N/A" : k.mttr_avg_hours.toFixed(1);
+  })
+  .catch(() => {
+    document.getElementById("meta").textContent =
+      "No se encontró metrics.json. Revisa que esté en docs/metrics.json";
+  });
+</script>
 </body>
 </html>
