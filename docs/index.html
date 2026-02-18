@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DORA Dashboard</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+    .muted { color: #6b7280; font-size: 12px; }
+    .kpi { font-size: 22px; font-weight: 700; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>DORA Metrics Dashboard</h1>
+  <div class="muted" id="meta">Dashboard listo. Falta conectar métricas.</div>
+
+  <div class="grid">
+    <div class="card"><div class="muted">Deployment Frequency</div><div class="kpi">-</div></div>
+    <div class="card"><div class="muted">Lead Time</div><div class="kpi">-</div></div>
+    <div class="card"><div class="muted">Change Failure Rate</div><div class="kpi">-</div></div>
+    <div class="card"><div class="muted">MTTR</div><div class="kpi">-</div></div>
+  </div>
+
+</body>
+</html>
