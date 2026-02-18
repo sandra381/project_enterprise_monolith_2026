@@ -39,8 +39,7 @@
 fetch('./metrics.json', { cache: "no-store" })
   .then(r => r.json())
   .then(m => {
-    document.getElementById("meta").textContent =
-      Generated: ${m.generated_at} | Window: last ${m.window_days} days;
+    document.getElementById("meta").textContent = Generated: ${m.generated_at} | Window: last ${m.window_days} days;
 
     const k = m.kpis || {};
     document.getElementById("df").textContent = (k.deployment_frequency_per_week ?? 0).toFixed(2);
@@ -49,8 +48,7 @@ fetch('./metrics.json', { cache: "no-store" })
     document.getElementById("mttr").textContent = (k.mttr_avg_hours == null) ? "N/A" : k.mttr_avg_hours.toFixed(1);
   })
   .catch(() => {
-    document.getElementById("meta").textContent =
-      "No se encontró metrics.json. Revisa que esté en docs/metrics.json";
+    document.getElementById("meta").textContent = "No se encontró metrics.json. Revisa que esté en docs/metrics.json";
   });
 </script>
 </body>
