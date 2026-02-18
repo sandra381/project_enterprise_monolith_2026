@@ -39,7 +39,7 @@
 fetch('./metrics.json', { cache: "no-store" })
   .then(r => r.json())
   .then(m => {
-    document.getElementById("meta").textContent = Generated: ${m.generated_at} | Window: last ${m.window_days} days;
+    document.getElementById("meta").textContent = `Generated: ${m.generated_at} | Window: last ${m.window_days} days`;
 
     const k = m.kpis || {};
     document.getElementById("df").textContent = (k.deployment_frequency_per_week ?? 0).toFixed(2);
