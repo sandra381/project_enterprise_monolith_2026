@@ -28,7 +28,8 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
       - name: Build and analyze
-        run: ./mvnw -B -U clean verify sonar:sonar \
+        run: |
+            ./mvnw -B -U clean verify sonar:sonar \
               -Dsonar.projectKey=sandra381_project_enterprise_monolith_2026 \
               -Dsonar.organization=sandra381 \
               -Dsonar.host.url=https://sonarcloud.io
