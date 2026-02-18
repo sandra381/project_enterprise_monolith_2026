@@ -1,0 +1,10 @@
+{
+  "generated_at": "manual",
+  "window_days": 90,
+  "kpis": {
+    "deployment_frequency_per_week": 0.00,
+    "lead_time_avg_hours": null,
+    "change_failure_rate": null,
+    "mttr_avg_hours": null
+  }
+}
