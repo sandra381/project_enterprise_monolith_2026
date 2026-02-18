@@ -1,6 +1,14 @@
 name: DORA Dashboard
 
 on:
+  push:
+      branches: [main]
+      paths:
+        - 'k8s/**'
+  pull_request:
+      branches: [main]
+      paths:
+        - 'k8s/**'
   workflow_dispatch:
   schedule:
     - cron: "0 6 * * 1"  # cada lunes 06:00 UTC
