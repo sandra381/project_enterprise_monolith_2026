@@ -1,55 +1,225 @@
 <!doctype html>
 <html lang="es">
 <head>
+  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DORA Dashboard</title>
+  <title>DORA Dashboard – PetClinic</title>
   <style>
-    body { font-family: system-ui, Arial; margin: 24px; }
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
-    .muted { color: #6b7280; font-size: 12px; }
-    .kpi { font-size: 22px; font-weight: 700; margin-top: 8px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 32px 24px 60px;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    header h1 span { color: #2563eb; }
+
+    #meta {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      border-top: 4px solid #e2e8f0;
+    }
+
+    .card.elite  { border-top-color: #22c55e; }
+    .card.high   { border-top-color: #3b82f6; }
+    .card.medium { border-top-color: #f59e0b; }
+    .card.low    { border-top-color: #ef4444; }
+    .card.na     { border-top-color: #94a3b8; }
+
+    .card-label { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-kpi   { font-size: 2rem; font-weight: 800; margin: 10px 0 4px; }
+    .card-desc  { font-size: 11px; color: #94a3b8; }
+
+    .rating-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 8px;
+    }
+
+    .elite-badge  { background: #dcfce7; color: #16a34a; }
+    .high-badge   { background: #dbeafe; color: #1d4ed8; }
+    .medium-badge { background: #fef3c7; color: #d97706; }
+    .low-badge    { background: #fee2e2; color: #dc2626; }
+    .na-badge     { background: #f1f5f9; color: #64748b; }
+
+    .thresholds {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 24px;
+      max-width: 680px;
+    }
+
+    .thresholds h2 { font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; color: #475569; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 6px 10px; background: #f8fafc; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 7px 10px; border-bottom: 1px solid #f1f5f9; }
+
+    .note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fffbeb;
+      border-left: 3px solid #f59e0b;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #78350f;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
-  <h1>DORA Metrics Dashboard</h1>
-  <div class="muted" id="meta">Cargando métricas...</div>
+
+  <header>
+    <h1>DORA Metrics <span>Dashboard</span> – Spring PetClinic</h1>
+    <div id="meta">Cargando métricas...</div>
+  </header>
 
   <div class="grid">
-    <div class="card">
-      <div class="muted">Deployments / week</div>
-      <div class="kpi" id="df">-</div>
+    <div class="card" id="card-df">
+      <div class="card-label">Deployment Frequency</div>
+      <div class="card-kpi" id="df">–</div>
+      <div class="card-desc">deploys / semana</div>
+      <span class="rating-badge" id="df-badge"></span>
     </div>
-    <div class="card">
-      <div class="muted">Lead Time (avg hours)</div>
-      <div class="kpi" id="lt">-</div>
+    <div class="card" id="card-lt">
+      <div class="card-label">Lead Time for Changes</div>
+      <div class="card-kpi" id="lt">–</div>
+      <div class="card-desc">horas promedio (PR → deploy)</div>
+      <span class="rating-badge" id="lt-badge"></span>
     </div>
-    <div class="card">
-      <div class="muted">Change Failure Rate</div>
-      <div class="kpi" id="cfr">-</div>
+    <div class="card" id="card-cfr">
+      <div class="card-label">Change Failure Rate</div>
+      <div class="card-kpi" id="cfr">–</div>
+      <div class="card-desc">% deploys con incidente</div>
+      <span class="rating-badge" id="cfr-badge"></span>
     </div>
-    <div class="card">
-      <div class="muted">MTTR (avg hours)</div>
-      <div class="kpi" id="mttr">-</div>
+    <div class="card" id="card-mttr">
+      <div class="card-label">Mean Time to Recovery</div>
+      <div class="card-kpi" id="mttr">–</div>
+      <div class="card-desc">horas promedio para resolver</div>
+      <span class="rating-badge" id="mttr-badge"></span>
+    </div>
+  </div>
+
+  <div class="thresholds">
+    <h2>📊 Niveles DORA de referencia</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Métrica</th>
+          <th>🟢 Elite</th>
+          <th>🔵 High</th>
+          <th>🟡 Medium</th>
+          <th>🔴 Low</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Deploy Freq.</strong></td>
+          <td>Varias/día</td>
+          <td>1/semana – 1/día</td>
+          <td>1/mes – 1/semana</td>
+          <td>Menos de 1/mes</td>
+        </tr>
+        <tr>
+          <td><strong>Lead Time</strong></td>
+          <td>&lt; 1 hora</td>
+          <td>1h – 1 día</td>
+          <td>1 día – 1 semana</td>
+          <td>&gt; 1 semana</td>
+        </tr>
+        <tr>
+          <td><strong>CFR</strong></td>
+          <td>0–5%</td>
+          <td>5–10%</td>
+          <td>10–15%</td>
+          <td>&gt; 15%</td>
+        </tr>
+        <tr>
+          <td><strong>MTTR</strong></td>
+          <td>&lt; 1 hora</td>
+          <td>&lt; 1 día</td>
+          <td>&lt; 1 semana</td>
+          <td>&gt; 1 semana</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      ℹ️ <strong>Nota:</strong> Lead Time, CFR y MTTR muestran "N/A" cuando no hay suficientes datos.
+      Para CFR y MTTR creen Issues con el label <code>incident</code> en GitHub y ciérrenlos para generar datos reales.
     </div>
   </div>
 
 <script>
-fetch('./metrics.json', { cache: "no-store" })
-  .then(r => r.json())
-  .then(m => {
-    document.getElementById("meta").textContent = `Generated: ${m.generated_at} | Window: last ${m.window_days} days`;
+  function rate(metric, value) {
+    if (value === null || value === undefined) return "na";
+    if (metric === "df")   return value >= 1 ? "elite" : value >= 1/7 ? "high" : value >= 1/30 ? "medium" : "low";
+    if (metric === "lt")   return value < 1 ? "elite" : value < 24 ? "high" : value < 168 ? "medium" : "low";
+    if (metric === "cfr")  return value <= 0.05 ? "elite" : value <= 0.10 ? "high" : value <= 0.15 ? "medium" : "low";
+    if (metric === "mttr") return value < 1 ? "elite" : value < 24 ? "high" : value < 168 ? "medium" : "low";
+    return "na";
+  }
 
-    const k = m.kpis || {};
-    document.getElementById("df").textContent = (k.deployment_frequency_per_week ?? 0).toFixed(2);
-    document.getElementById("lt").textContent = (k.lead_time_avg_hours == null) ? "N/A" : k.lead_time_avg_hours.toFixed(1);
-    document.getElementById("cfr").textContent = (k.change_failure_rate == null) ? "N/A" : (k.change_failure_rate * 100).toFixed(1) + "%";
-    document.getElementById("mttr").textContent = (k.mttr_avg_hours == null) ? "N/A" : k.mttr_avg_hours.toFixed(1);
-  })
-  .catch(() => {
-    document.getElementById("meta").textContent = "No se encontró metrics.json. Revisa que esté en docs/metrics.json";
-  });
+  function label(r) {
+    return { elite: "🟢 Elite", high: "🔵 High", medium: "🟡 Medium", low: "🔴 Low", na: "⚪ Sin datos" }[r];
+  }
+
+  function applyCard(id, kpiId, badgeId, value, format) {
+    const r = rate(id, value);
+    document.getElementById("card-" + id).className = "card " + r;
+    document.getElementById(kpiId).textContent = value === null || value === undefined ? "N/A" : format(value);
+    const badge = document.getElementById(badgeId);
+    badge.textContent = label(r);
+    badge.className = "rating-badge " + r + "-badge";
+  }
+
+  fetch('./metrics.json', { cache: "no-store" })
+    .then(r => r.json())
+    .then(m => {
+      const k = m.kpis || {};
+      document.getElementById("meta").textContent =
+        `Generado: ${m.generated_at === "manual" ? "datos de prueba" : new Date(m.generated_at).toLocaleString("es")} · Ventana: últimos ${m.window_days} días`;
+
+      applyCard("df",   "df",   "df-badge",   k.deployment_frequency_per_week, v => v.toFixed(2));
+      applyCard("lt",   "lt",   "lt-badge",   k.lead_time_avg_hours,           v => v.toFixed(1) + "h");
+      applyCard("cfr",  "cfr",  "cfr-badge",  k.change_failure_rate,           v => (v * 100).toFixed(1) + "%");
+      applyCard("mttr", "mttr", "mttr-badge", k.mttr_avg_hours,                v => v.toFixed(1) + "h");
+    })
+    .catch(() => {
+      document.getElementById("meta").textContent = "❌ No se encontró metrics.json – revisa que esté en docs/metrics.json";
+    });
 </script>
 </body>
 </html>
