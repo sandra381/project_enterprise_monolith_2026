@@ -7,3 +7,5 @@ Este repositorio contiene la documentación del análisis realizado sobre el pro
 - [User Stories](user-stories/user-stories.pdf)
 ## Onboarding Log
 - [Onboarding Log](onboarding-log/onboarding-log.pdf)
+## Tech Debt Audit
+- [Tech Debt Audit](Hotspots.md)
