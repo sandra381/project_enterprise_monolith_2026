@@ -8,4 +8,4 @@ Este repositorio contiene la documentación del análisis realizado sobre el pro
 ## Onboarding Log
 - [Onboarding Log](onboarding-log/onboarding-log.pdf)
 ## Governance Pipeline & Tech Debt Audit
-- [Governance Pipeline & Tech Debt Audit]()
+- [Governance Pipeline & Tech Debt Audit](Delievery2.pdf)
