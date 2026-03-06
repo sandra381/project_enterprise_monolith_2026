@@ -10,5 +10,5 @@ Este repositorio contiene la documentación del análisis realizado sobre el pro
 ## Governance Pipeline & Tech Debt Audit
 - [Governance Pipeline & Tech Debt Audit](Delievery2.pdf)
 ## Security Hardening (DevSecOps)
-- [Security Hardening (DevSecOps)](Delivery3_DevSecOps .pdf)
+- [Security Hardening (DevSecOps)](Delivery3.pdf)
 
