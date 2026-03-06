@@ -34,8 +34,6 @@
     <!-- Web SonarQube -->
     <sonar.organization>sandra381</sonar.organization>
     <!-- Security fixes -->
-    <jackson-bom.version>3.1.0</jackson-bom.version>
-    <logback.version>1.5.25</logback.version>
   </properties>
 
   <licenses>
