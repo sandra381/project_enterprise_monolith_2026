@@ -7,7 +7,7 @@ Asegúrate de tener Docker y Docker Compose instalados. Luego ejecuta:
 
 ```bash
 docker-compose up
-
+```
 ## Context Map
 - [Context Map](context-map/context-map.pdf)
 ## User Stories
