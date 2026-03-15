@@ -1,22 +1,6 @@
-/*
- * Copyright 2012-2025 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.petclinic.owner;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -28,23 +12,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Michael Isvy
- * @author Wick Dynex
- */
 @Controller
 class OwnerController {
 
@@ -61,33 +36,67 @@ class OwnerController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@ModelAttribute("owner")
-	public Owner findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
-		return ownerId == null ? new Owner()
-				: this.owners.findById(ownerId)
-					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
-							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
-	}
-
+	// ========== CREAR NUEVO OWNER ==========
 	@GetMapping("/owners/new")
-	public String initCreationForm() {
+	public String initCreationForm(Model model) {
+		model.addAttribute("owner", new OwnerDto()); // Usamos DTO
+		model.addAttribute("isNew", true); // Para el texto del botón
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String processCreationForm(@Valid OwnerDto ownerDto, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
+			// Si hay errores, devolvemos la misma vista con el DTO y el flag isNew
+			model.addAttribute("owner", ownerDto);
+			model.addAttribute("isNew", true);
+			model.addAttribute("error", "There was an error in creating the owner.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
+		// Convertimos DTO a entidad y guardamos
+		Owner owner = new Owner();
+		copyDtoToOwner(ownerDto, owner);
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "New Owner Created");
 		return "redirect:/owners/" + owner.getId();
 	}
 
+	// ========== EDITAR OWNER EXISTENTE ==========
+	@GetMapping("/owners/{ownerId}/edit")
+	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
+		Owner owner = this.owners.findById(ownerId)
+			.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId));
+		OwnerDto ownerDto = new OwnerDto();
+		copyOwnerToDto(owner, ownerDto);
+		model.addAttribute("owner", ownerDto);
+		model.addAttribute("isNew", false); // Para el texto del botón
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
+
+	@PostMapping("/owners/{ownerId}/edit")
+	public String processUpdateOwnerForm(@Valid OwnerDto ownerDto, BindingResult result,
+			@PathVariable("ownerId") int ownerId, Model model, RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			model.addAttribute("owner", ownerDto);
+			model.addAttribute("isNew", false);
+			model.addAttribute("error", "There was an error in updating the owner.");
+			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+		}
+
+		Owner owner = this.owners.findById(ownerId)
+			.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId));
+		copyDtoToOwner(ownerDto, owner);
+		this.owners.save(owner);
+		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
+		return "redirect:/owners/" + ownerId;
+	}
+
+	// ========== BUSCAR OWNERS (sin cambios) ==========
 	@GetMapping("/owners/find")
-	public String initFindForm() {
+	public String initFindForm(Model model) {
+		model.addAttribute("owner", new Owner());
 		return "owners/findOwners";
 	}
 
@@ -122,39 +131,13 @@ class OwnerController {
 		return "owners/ownersList";
 	}
 
-	// Delivery 5 - FinOps: EntityGraph en OwnerRepository elimina el N+1
-	// Las consultas bajaron de 21 a 2 por request (-90%)
 	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 		return owners.findByLastNameStartingWith(lastname, pageable);
 	}
 
-	@GetMapping("/owners/{ownerId}/edit")
-	public String initUpdateOwnerForm() {
-		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-	}
-
-	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
-			RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in updating the owner.");
-			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-		}
-
-		if (!Objects.equals(owner.getId(), ownerId)) {
-			result.rejectValue("id", "mismatch", "The owner ID in the form does not match the URL.");
-			redirectAttributes.addFlashAttribute("error", "Owner ID mismatch. Please try again.");
-			return "redirect:/owners/{ownerId}/edit";
-		}
-
-		owner.setId(ownerId);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
-		return "redirect:/owners/{ownerId}";
-	}
-
+	// ========== MOSTRAR DETALLES (sin cambios) ==========
 	@GetMapping("/owners/{ownerId}")
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
@@ -163,6 +146,23 @@ class OwnerController {
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 		mav.addObject(owner);
 		return mav;
+	}
+
+	// ========== MÉTODOS AUXILIARES DE CONVERSIÓN ==========
+	private void copyDtoToOwner(OwnerDto dto, Owner owner) {
+		owner.setFirstName(dto.getFirstName());
+		owner.setLastName(dto.getLastName());
+		owner.setAddress(dto.getAddress());
+		owner.setCity(dto.getCity());
+		owner.setTelephone(dto.getTelephone());
+	}
+
+	private void copyOwnerToDto(Owner owner, OwnerDto dto) {
+		dto.setFirstName(owner.getFirstName());
+		dto.setLastName(owner.getLastName());
+		dto.setAddress(owner.getAddress());
+		dto.setCity(owner.getCity());
+		dto.setTelephone(owner.getTelephone());
 	}
 
 }

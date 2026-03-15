@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
-
 <body>
-
   <h2 th:text="#{owner}">Owner</h2>
+  <!-- Mostrar mensaje de error si existe -->
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
   <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
     <div class="form-group has-feedback">
       <input th:replace="~{fragments/inputField :: input (#{firstName}, 'firstName', 'text')}" />
@@ -15,11 +14,11 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button th:with="text=${owner['new']} ? #{addOwner} : #{updateOwner}" class="btn btn-primary" type="submit"
+        <!-- Usamos isNew en lugar de owner['new'] -->
+        <button th:with="text=${isNew} ? #{addOwner} : #{updateOwner}" class="btn btn-primary" type="submit"
           th:text="${text}">Add Owner</button>
       </div>
     </div>
   </form>
 </body>
-
 </html>
