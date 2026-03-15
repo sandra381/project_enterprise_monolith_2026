@@ -49,10 +49,12 @@ public class Pet extends NamedEntity {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
-	@ManyToOne
+	// Delivery 5 - FinOps: EAGER para evitar N+1 queries en tipos de mascota
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "type_id")
 	private PetType type;
 
+	// Delivery 5 - FinOps: EAGER ya estaba, visits se cargan junto con la mascota
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "pet_id")
 	@OrderBy("date ASC")
