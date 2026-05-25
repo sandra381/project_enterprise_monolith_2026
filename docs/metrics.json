@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-18T10:13:42.796619+00:00",
+  "generated_at": "2026-05-25T10:18:17.161986+00:00",
   "window_days": 90,
   "kpis": {
-    "deployment_frequency_per_week": 0.23333333333333334,
-    "lead_time_avg_hours": 0.35416666666666663,
-    "change_failure_rate": 1.0,
-    "mttr_avg_hours": 0.67375
+    "deployment_frequency_per_week": 0.0,
+    "lead_time_avg_hours": null,
+    "change_failure_rate": null,
+    "mttr_avg_hours": null
   }
 }
