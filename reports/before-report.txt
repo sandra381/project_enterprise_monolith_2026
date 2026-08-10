@@ -1,0 +1,33 @@
+
+Report Summary
+
+┌─────────┬──────┬─────────────────┬─────────┐
+│ Target  │ Type │ Vulnerabilities │ Secrets │
+├─────────┼──────┼─────────────────┼─────────┤
+│ pom.xml │ pom  │        3        │    -    │
+└─────────┴──────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+pom.xml (pom)
+=============
+Total: 3 (UNKNOWN: 0, LOW: 1, MEDIUM: 0, HIGH: 2, CRITICAL: 0)
+
+┌─────────────────────────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────────────┬──────────────────────────────────────────────────────────────┐
+│             Library             │    Vulnerability    │ Severity │ Status │ Installed Version │     Fixed Version     │                            Title                             │
+├─────────────────────────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────────────┼──────────────────────────────────────────────────────────────┤
+│ ch.qos.logback:logback-core     │ CVE-2026-1225       │ LOW      │ fixed  │ 1.5.22            │ 1.5.25                │ ch.qos.logback/logback-core: Malicious logback.xml           │
+│                                 │                     │          │        │                   │                       │ configuration file allows instantiation of arbitrary classes │
+│                                 │                     │          │        │                   │                       │ https://avd.aquasec.com/nvd/cve-2026-1225                    │
+├─────────────────────────────────┼─────────────────────┼──────────┤        ├───────────────────┼───────────────────────┼──────────────────────────────────────────────────────────────┤
+│ tools.jackson.core:jackson-core │ CVE-2026-29062      │ HIGH     │        │ 3.0.3             │ 3.1.0                 │ jackson-core has Nesting Depth Constraint Bypass in          │
+│                                 │                     │          │        │                   │                       │ `UTF8DataInputJsonParser` potentially allowing Resource      │
+│                                 │                     │          │        │                   │                       │ Exhaustion...                                                │
+│                                 │                     │          │        │                   │                       │ https://avd.aquasec.com/nvd/cve-2026-29062                   │
+│                                 ├─────────────────────┤          │        │                   ├───────────────────────┼──────────────────────────────────────────────────────────────┤
+│                                 │ GHSA-72hv-8253-57qq │          │        │                   │ 3.1.0, 2.21.1, 2.18.6 │ jackson-core: Number Length Constraint Bypass in Async       │
+│                                 │                     │          │        │                   │                       │ Parser Leads to Potential DoS...                             │
+│                                 │                     │          │        │                   │                       │ https://github.com/advisories/GHSA-72hv-8253-57qq            │
+└─────────────────────────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────────────┴──────────────────────────────────────────────────────────────┘
