@@ -1,4 +1,14 @@
+version: "3.8"
+
 services:
+
+  petclinic:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
   mysql:
     image: mysql:9.5
     ports:
@@ -11,6 +21,7 @@ services:
       - MYSQL_DATABASE=petclinic
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
+
   postgres:
     image: postgres:18.1
     ports:
